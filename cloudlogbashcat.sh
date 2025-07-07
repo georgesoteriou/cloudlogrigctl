@@ -38,16 +38,10 @@ delay=1
 
 echo "starting rigctl"
 rigctld -m $rigctlRadioId -r /dev/ttyUSB0 &
-rigctld_pid=$!
 
 sleep 2
 
-
 while true; do
-	if ! ps -p $rigctld_pid > /dev/null; then
-		echo "rigctld has died. Exiting."
-		exit 1
-	fi
   
 	# Open FD 3 to rig control server ...
 	exec 3<>/dev/tcp/$host/$port
@@ -66,8 +60,6 @@ while true; do
 	# Close FD 3
 	exec 3>&-
 
-
-		
   if [ $rigFreq -ne $rigOldFreq  ] || [ "$rigMode" != "$rigOldMode"  ]; then
     # rig freq or mode changed, update Cloudlog
     [[ $DEBUG -eq 1 ]] && printf  "%-10d   %-6s\n" $rigFreq $rigMode
